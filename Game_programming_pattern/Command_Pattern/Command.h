@@ -19,60 +19,78 @@ public:
 
 class CForwardCommand : public CBaseCommand
 {
+public:
 	virtual ~CForwardCommand() {}
 	virtual void execute(CGameObject& gameObject) override;
 };
 
 class CBackwardCommand : public CBaseCommand
 {
+public:
 	virtual ~CBackwardCommand() {}
 	virtual void execute(CGameObject& gameObject) override;
 };
 
 class CRightCommand : public CBaseCommand
 {
+public:
 	virtual ~CRightCommand() {}
 	virtual void execute(CGameObject& gameObject) override;
 };
 
 class CLeftCommand : public CBaseCommand
 {
+public:
 	virtual ~CLeftCommand() {}
 	virtual void execute(CGameObject& gameObject) override;
 };
 
-class CInputHandler 
+class CBaseInputHandler
 {
 public:
-	UCHAR pKeysBuffer[256];
-
-	CInputHandler() 
+	CBaseInputHandler()
 	{
-		key_map[ButtonType::BUTTON_FORWARD] = VK_UP;
-		key_map[ButtonType::BUTTON_BACKWARD] = VK_DOWN;
-		key_map[ButtonType::BUTTON_RIGHT] = VK_RIGHT;
-		key_map[ButtonType::BUTTON_LEFT] = VK_LEFT;
-
-		button_forward = new CForwardCommand();
-		button_backward = new CBackwardCommand();
-		button_right = new CRightCommand();
-		button_left = new CLeftCommand();
 	}
 
-	~CInputHandler()
+	virtual ~CBaseInputHandler()
 	{
 	}
 
 	bool IsPressed(ButtonType buttonType);
-	void HandleInput(CGameObject& gameObject);
+	virtual void HandleInput(CGameObject& gameObject) = 0;
 
-	void ChangeKey();
+	void ChangeKey() {};
+
+	static UCHAR pKeysBuffer[256];
+
+protected:
+	std::unordered_map<ButtonType, WORD> m_mapButtonToKey;
+};
+
+class CPlayerInputHandler : public CBaseInputHandler
+{
+public:
+	CPlayerInputHandler()
+		: CBaseInputHandler()
+	{
+		m_mapButtonToKey[ButtonType::BUTTON_FORWARD] = VK_UP;
+		m_mapButtonToKey[ButtonType::BUTTON_BACKWARD] = VK_DOWN;
+		m_mapButtonToKey[ButtonType::BUTTON_RIGHT] = VK_RIGHT;
+		m_mapButtonToKey[ButtonType::BUTTON_LEFT] = VK_LEFT;
+
+		button_forward = make_unique<CForwardCommand>();
+		button_backward = make_unique<CBackwardCommand>();
+		button_right = make_unique<CRightCommand>();
+		button_left = make_unique<CLeftCommand>();
+	}
+
+	virtual ~CPlayerInputHandler() {};
+
+	virtual void HandleInput(CGameObject& gameObject) override;
 
 private:
-	std::unordered_map<ButtonType, WORD> key_map;
-
-	CBaseCommand* button_forward;
-	CBaseCommand* button_backward;
-	CBaseCommand* button_right;
-	CBaseCommand* button_left;
+	std::unique_ptr<CBaseCommand> button_forward;
+	std::unique_ptr<CBaseCommand> button_backward;
+	std::unique_ptr<CBaseCommand> button_right;
+	std::unique_ptr<CBaseCommand> button_left;
 };

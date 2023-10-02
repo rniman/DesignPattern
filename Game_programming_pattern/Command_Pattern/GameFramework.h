@@ -85,7 +85,6 @@ private:
 
 	_TCHAR						m_pszFrameRate[70];
 
-	std::unique_ptr<class CInputHandler> m_pInputHandler;
-	class CBaseCommand* m_pCommand = nullptr;
+	std::unique_ptr<class CPlayerInputHandler> m_pInputHandler;
 };
 

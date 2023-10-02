@@ -37,7 +37,7 @@ CGameFramework::CGameFramework()
 
 	_tcscpy_s(m_pszFrameRate, _T("LabProject ("));
 
-	m_pInputHandler = make_unique<CInputHandler>();
+	m_pInputHandler = make_unique<CPlayerInputHandler>();
 }
 
 CGameFramework::~CGameFramework()

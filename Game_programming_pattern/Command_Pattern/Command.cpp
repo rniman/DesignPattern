@@ -3,7 +3,6 @@
 #include "Object.h"
 #include "Player.h"
 
-
 void CForwardCommand::execute(CGameObject& gameObject)
 {
 	CPlayer* player = dynamic_cast<CPlayer*>(&gameObject);
@@ -32,18 +31,20 @@ void CLeftCommand::execute(CGameObject& gameObject)
 	player->Move(shift, true);
 }
 
-bool CInputHandler::IsPressed(ButtonType buttonType)
+UCHAR CBaseInputHandler::pKeysBuffer[] = {};
+
+bool CBaseInputHandler::IsPressed(ButtonType buttonType)
 {
-	if (pKeysBuffer[key_map[buttonType]] & 0xF0)
+	if (CBaseInputHandler::pKeysBuffer[m_mapButtonToKey[buttonType]] & 0xF0)
 	{
 		return true;
 	}
 	return false;
 }
 
-void CInputHandler::HandleInput(CGameObject& gameObject)
+void CPlayerInputHandler::HandleInput(CGameObject& gameObject)
 {
-	if (!GetKeyboardState(pKeysBuffer))
+	if (!GetKeyboardState(CBaseInputHandler::pKeysBuffer))
 	{
 		return;
 	}
@@ -54,6 +55,3 @@ void CInputHandler::HandleInput(CGameObject& gameObject)
 	if (IsPressed(ButtonType::BUTTON_LEFT)) button_left->execute(gameObject);
 }
 
-void CInputHandler::ChangeKey()
-{
-}
