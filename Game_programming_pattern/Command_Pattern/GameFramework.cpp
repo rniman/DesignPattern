@@ -48,6 +48,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 	m_hInstance = hInstance;
 	m_hWnd = hMainWnd;
+	m_pInputHandler->SetHWND(m_hWnd);
 
 	CreateDirect3DDevice();
 	CreateCommandQueueAndList();
@@ -295,7 +296,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:
 			::SetCapture(hWnd);
-			::GetCursorPos(&m_ptOldCursorPos);
+			::GetCursorPos(&CBaseInputHandler::m_sptOldCursorPos);
 			break;
 		case WM_LBUTTONUP:
 		case WM_RBUTTONUP:
@@ -434,37 +435,39 @@ void CGameFramework::ReleaseObjects()
 
 void CGameFramework::ProcessInput()
 {
-	//static UCHAR pKeysBuffer[256];
-	bool bProcessedByScene = false;
-	//if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
-	//if (GetKeyboardState(m_pInputHandler->pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(m_pInputHandler->pKeysBuffer);
-	if (!bProcessedByScene)
-	{
-		m_pInputHandler->HandleInput(*m_pPlayer);
+	GetKeyboardState(CBaseInputHandler::m_spKeysBuffer);
+	m_pInputHandler->HandleInput(*m_pPlayer);
 
-		float cxDelta = 0.0f, cyDelta = 0.0f;
-		POINT ptCursorPos;
-		if (GetCapture() == m_hWnd)
-		{
-			SetCursor(NULL);
-			GetCursorPos(&ptCursorPos);
-			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
-			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
-		}
-
-		//if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
-		//{
-		//	if (cxDelta || cyDelta)
-		//	{
-		//		if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-		//			m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-		//		else
-		//			m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
-		//	}
-		//}
-	}
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+
+	//bool bProcessedByScene = false;
+	//if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
+	//if (!bProcessedByScene)
+	//{
+
+	//	float cxDelta = 0.0f, cyDelta = 0.0f;
+	//	POINT ptCursorPos;
+	//	if (GetCapture() == m_hWnd)
+	//	{
+	//		SetCursor(NULL);
+	//		GetCursorPos(&ptCursorPos);
+	//		cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
+	//		cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
+	//		SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+	//	}
+
+	//	if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
+	//	{
+	//		if (cxDelta || cyDelta)
+	//		{
+	//			if (pKeysBuffer[VK_RBUTTON] & 0xF0)
+	//				m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+	//			else
+	//				m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+	//		}
+	//	}
+	//}
+	//m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::AnimateObjects()
