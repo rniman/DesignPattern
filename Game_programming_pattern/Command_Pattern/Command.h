@@ -70,10 +70,11 @@ public:
 
 	void ChangeKey() {};
 
-	//interface
+	// interface
 	void SetHWND(HWND hWnd) { m_shWnd = hWnd; };
 	static HWND GetHWND() { return m_shWnd; } ;
 
+	// static member variable
 	static UCHAR m_spKeysBuffer[256];
 	static POINT m_sptOldCursorPos;
 private:

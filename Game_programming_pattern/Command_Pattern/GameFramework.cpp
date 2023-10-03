@@ -435,39 +435,18 @@ void CGameFramework::ReleaseObjects()
 
 void CGameFramework::ProcessInput()
 {
-	GetKeyboardState(CBaseInputHandler::m_spKeysBuffer);
+	
+	if (!GetKeyboardState(CBaseInputHandler::m_spKeysBuffer))
+	{
+		char buf[256];
+		char err[] = "GetKeyboardState Fail";
+		sprintf_s(buf, sizeof(buf), "Debug: %s\n", err);
+		OutputDebugStringA(buf);
+	}
+
 	m_pInputHandler->HandleInput(*m_pPlayer);
 
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
-
-	//bool bProcessedByScene = false;
-	//if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
-	//if (!bProcessedByScene)
-	//{
-
-	//	float cxDelta = 0.0f, cyDelta = 0.0f;
-	//	POINT ptCursorPos;
-	//	if (GetCapture() == m_hWnd)
-	//	{
-	//		SetCursor(NULL);
-	//		GetCursorPos(&ptCursorPos);
-	//		cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-	//		cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
-	//		SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
-	//	}
-
-	//	if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
-	//	{
-	//		if (cxDelta || cyDelta)
-	//		{
-	//			if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-	//				m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-	//			else
-	//				m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
-	//		}
-	//	}
-	//}
-	//m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
 void CGameFramework::AnimateObjects()

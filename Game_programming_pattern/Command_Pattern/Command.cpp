@@ -63,8 +63,6 @@ bool CBaseInputHandler::IsPressed(ButtonType buttonType)
 	return false;
 }
 
-
-
 void CPlayerInputHandler::HandleInput(CGameObject& gameObject)
 {
 	if (IsPressed(ButtonType::BUTTON_MOVE_FORWARD)) button_forward->execute(gameObject);
